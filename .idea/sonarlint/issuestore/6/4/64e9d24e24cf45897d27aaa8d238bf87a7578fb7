@@ -1,0 +1,8 @@
+
+
+java:S3776"RRefactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.(‘ο‹ώÿÿÿÿ8“έ¦Ò2J$d74fbb28-b672-44ad-ba79-c64c0107bedc
+p	java:S108"")Either remove or fill this block of code.(–Ω³ύÿÿÿÿ8έ¦Ò2J$1debf2fd-7451-4d76-b988-928af05b00bf
+|
+java:S1068"4Remove this unused "FILE_TO_SEND_DIR" private field.(πάιωÿÿÿÿ8²έ¦Ò2J$2a592755-4b32-43d4-bf35-2179233cf02b
+y
+java:S1144†"5Remove this unused private "sendVoiceMessage" method.(©εΰ8³έ¦Ò2J$5c03af33-2547-4a32-b937-4f0e6efadbe1
