@@ -8,12 +8,12 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
-import java.nio.file.Path;
 
 public class TBVoiceChanger extends TelegramLongPollingBot {
     final String botUsername;
+
     FileDownloader fileDownloader = new FileDownloader(this);
-    FileManager fileManager = new FileManager();
+    FileSender fileSender = new FileSender(this);
 
 
     TBVoiceChanger(String botUsername, String botToken) {
@@ -23,35 +23,46 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        // Проверяем, есть ли сообщение и текст
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            String messageText = update.getMessage().getText();
-            long chatId = update.getMessage().getChatId();
+        // Проверяем, есть ли сообщение
+        if (update.hasMessage()) {
+            // если сообщение это текст
+            if (update.getMessage().hasText()) {
+                String messageText = update.getMessage().getText();
+                long chatId = update.getMessage().getChatId();
 
-            // Обработка команды /start
-            if (messageText.equals("/start")) {
-                sendMessage(chatId, "Привет! Я простой бот. Напиши что-нибудь. \n" + "P.S. попробуй команду /voice");
+                switch (messageText) {
+                    case "/start":
+                        sendTextMessage(chatId, "Привет! Я простой бот. Напиши что-нибудь. \n" +
+                                "/voice\n" +
+                                "/getdoc");
+                        break;
+                    case "/voice":
+                        File voiceFile = new File("file_to_send/kami_ini_909045782/test_recording_my_voice.ogg");
+                        sendVoiceMessage(chatId, voiceFile);
+                        break;
+                    case "/getdoc":
+                        fileSender.sendFile(update.getMessage(),
+                                new File("file_to_send/kami_ini_909045782/test_recording_my_voice.ogg"));
+                        break;
+                    default:
+                        sendTextMessage(chatId, "Вы сказали: " + messageText);
+                        break;
 
-            } else if (messageText.equals("/voice")) {
-                File voiceFile = new File("file_to_send/kami_ini/тестовая-запись-моего-голоса.ogg");
-                sendVoiceMessage(chatId, voiceFile);
-
-            } else {
-                // Повторяем сообщение пользователя
-                sendMessage(chatId, "Вы сказали: " + messageText);
+                }
             }
-        }
-        if (update.hasMessage() && (update.getMessage().hasDocument() || update.getMessage().hasAudio())) {
-            try {
-                fileDownloader.handleDownloadFile(update.getMessage());
-            } catch (TelegramApiException e) {
-                throw new RuntimeException(e);
+            // если сообщение это файл
+            else if (update.getMessage().hasDocument() || update.getMessage().hasAudio()) {
+                try {
+                    fileDownloader.handleDownloadFile(update.getMessage());
+                } catch (TelegramApiException e) {
+                    handleError(update.getMessage().getChatId(), "Ошибка при загрузке файла. Попробуйте позднее.", e);
+                }
             }
         }
     }
 
 
-    public void sendMessage(long chatId, String text) {
+    public void sendTextMessage(long chatId, String text) {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
         message.setText(text);
@@ -80,7 +91,7 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
     }
 
     public void handleError(long chatId, String message, Exception e) {
-        sendMessage(chatId, message + ": " + e.getMessage());
+        sendTextMessage(chatId, message + "\nКод ошибки: " + e.getMessage());
         e.printStackTrace();
     }
 

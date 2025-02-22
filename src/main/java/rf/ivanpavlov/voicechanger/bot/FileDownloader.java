@@ -1,12 +1,10 @@
 package rf.ivanpavlov.voicechanger.bot;
 
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.objects.File;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.io.ObjectInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -38,7 +36,8 @@ public class FileDownloader {
             }
             // проверяем расширение документа
             if (!isExtFileValid(file, ALLOWED_EXTENSIONS)) {
-                return null;
+                bot.sendTextMessage(message.getChatId(), "Неверный формат файла. " +
+                        "Я поддерживаю только wav, mp3 и ogg форматы.");
             }
 
             // получаем путь к файлу на скачивание
@@ -51,7 +50,7 @@ public class FileDownloader {
             bot.downloadFile(file.getFilePath(), filePathDownload.toFile());
 
             // говорим об успешной загрузке файла
-            bot.sendMessage(message.getChatId(), "Файл успешно загружен!");
+            bot.sendTextMessage(message.getChatId(), "Файл успешно загружен!");
 
             return filePathDownload;
 

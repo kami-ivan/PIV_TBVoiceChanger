@@ -3,21 +3,25 @@ package rf.ivanpavlov.voicechanger.bot;
 import org.telegram.telegrambots.meta.api.objects.File;
 import org.telegram.telegrambots.meta.api.objects.User;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class FileManager {
+
     private static final String DOWNLOAD_DIR = "downloads";
     private static final String FILE_TO_SEND_DIR = "file_to_send";
 
     public Path getDownloadPath(User user, File file) {
-        return Paths.get(DOWNLOAD_DIR, sanitizeFileName(user.getUserName() + "-" + user.getId()),
+        return Paths.get(DOWNLOAD_DIR, sanitizeFileName(user.getUserName()) + "_" + user.getId(),
                 getFileName(file));
     }
 
-    public Path getSendFilePath(User user, File file) {
-        String filePath = FILE_TO_SEND_DIR + sanitizeFileName(user.getUserName() + "-" + user.getId()) +
-                java.io.File.separator + getFileName(file);
+    public Path getSendFilePath(User user, java.io.File file) {
+        System.out.println(file.getName());
+        String filePath = FILE_TO_SEND_DIR + java.io.File.separator +
+                (user.getUserName()) + "_" + user.getId() +
+                java.io.File.separator + file.getName();
 
         if (isPath(filePath)) {
             return Paths.get(filePath);
