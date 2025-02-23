@@ -51,7 +51,7 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
                 }
             }
             // если сообщение это файл
-            else if (update.getMessage().hasDocument() || update.getMessage().hasAudio()) {
+            else if (update.getMessage().hasDocument() || update.getMessage().hasAudio() || update.getMessage().hasVoice()) {
                 try {
                     fileDownloader.handleDownloadFile(update.getMessage());
                 } catch (TelegramApiException e) {

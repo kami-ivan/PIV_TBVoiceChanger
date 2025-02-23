@@ -14,7 +14,7 @@ public class FileDownloader {
 
     FileManager fileManager = new FileManager();
 
-    private static final List<String> ALLOWED_EXTENSIONS = List.of(".mp3", ".wav", ".ogg");
+    private static final List<String> ALLOWED_EXTENSIONS = List.of(".mp3", ".wav", ".ogg", ".oga");
 
 
     public FileDownloader(TBVoiceChanger bot) {
@@ -33,11 +33,15 @@ public class FileDownloader {
             } else if (message.hasDocument()) {
                 // получаем документ
                 file = bot.execute(new GetFile(message.getDocument().getFileId()));
+
+            } else if (message.hasVoice()) {
+
+                file = bot.execute(new GetFile(message.getVoice().getFileId()));
             }
             // проверяем расширение документа
             if (!isExtFileValid(file, ALLOWED_EXTENSIONS)) {
                 bot.sendTextMessage(message.getChatId(), "Неверный формат файла. " +
-                        "Я поддерживаю только wav, mp3 и ogg форматы.");
+                        "Я поддерживаю только .wav, .mp3, .ogg и .oga форматы.");
             }
 
             // получаем путь к файлу на скачивание
