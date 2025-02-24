@@ -21,7 +21,7 @@ public class FileDownloader {
         this.bot = bot;
     }
 
-    public Path handleDownloadFile(Message message) throws TelegramApiException {
+    public java.io.File handleDownloadFile(Message message) throws TelegramApiException {
         try {
             File file = null;
             // если отправили аудио
@@ -42,21 +42,21 @@ public class FileDownloader {
             if (!isExtFileValid(file, ALLOWED_EXTENSIONS)) {
                 bot.sendTextMessage(message.getChatId(), "Неверный формат файла. " +
                         "Я поддерживаю только .wav, .mp3, .ogg и .oga форматы.");
+                return null;
             }
 
             // получаем путь к файлу на скачивание
-            Path filePathDownload = fileManager.getDownloadPath(message.getFrom(), file);
+            Path localPathToDownload = fileManager.getDownloadPath(message.getFrom(), file);
 
             // создаем путь
-            Files.createDirectories(filePathDownload.getParent());
+            Files.createDirectories(localPathToDownload.getParent());
 
             // скачиваем файл
-            bot.downloadFile(file.getFilePath(), filePathDownload.toFile());
+            bot.downloadFile(file.getFilePath(), localPathToDownload.toFile());
 
             // говорим об успешной загрузке файла
-            bot.sendTextMessage(message.getChatId(), "Файл успешно загружен!");
 
-            return filePathDownload;
+            return localPathToDownload.toFile();
 
         } catch (Exception e) {
             bot.handleError(message.getChatId(),

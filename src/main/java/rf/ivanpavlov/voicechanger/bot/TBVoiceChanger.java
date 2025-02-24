@@ -8,12 +8,14 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
+import java.nio.file.Path;
 
 public class TBVoiceChanger extends TelegramLongPollingBot {
     final String botUsername;
 
     FileDownloader fileDownloader = new FileDownloader(this);
     FileSender fileSender = new FileSender(this);
+    FileAPI fileAPI = new FileAPI();
 
 
     TBVoiceChanger(String botUsername, String botToken) {
@@ -52,8 +54,17 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
             }
             // если сообщение это файл
             else if (update.getMessage().hasDocument() || update.getMessage().hasAudio() || update.getMessage().hasVoice()) {
+                if (update.getMessage().hasDocument()) {
+
+                }
                 try {
-                    fileDownloader.handleDownloadFile(update.getMessage());
+
+                    File file = fileDownloader.handleDownloadFile(update.getMessage());
+                    sendTextMessage(update.getMessage().getChatId(), "файл скачался");
+                    File resultFile = fileAPI.convert(file);
+                    sendTextMessage(update.getMessage().getChatId(), "файл конвертировался");
+                    fileSender.sendFile(update.getMessage(), resultFile);
+
                 } catch (TelegramApiException e) {
                     handleError(update.getMessage().getChatId(), "Ошибка при загрузке файла. Попробуйте позднее.", e);
                 }
