@@ -12,9 +12,10 @@ import java.io.IOException;
 
 
 public class FileAPI {
-    String apiUrl = "http://localhost:8000/convert";  // URL вашего API        // Путь к файлу
 
     public File convert(File file) {
+        String apiUrlConvert = "http://localhost:8000/convert";  // URL вашего API        // Путь к файлу
+
         RestTemplate restTemplate = new RestTemplate();
 
         // Создаем тело запроса
@@ -28,7 +29,7 @@ public class FileAPI {
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         // Отправляем запрос
-        ResponseEntity<byte[]> response = restTemplate.postForEntity(apiUrl, requestEntity, byte[].class);
+        ResponseEntity<byte[]> response = restTemplate.postForEntity(apiUrlConvert, requestEntity, byte[].class);
 
         // Проверяем статус ответа
         if (response.getStatusCode() == HttpStatus.OK) {
@@ -49,5 +50,27 @@ public class FileAPI {
         }
         System.out.println("Status Code: " + response.getStatusCode());
         return null;
+    }
+
+    public String add_zip(File file) {
+
+        String apiUrlAddZip = "http://localhost:8000/add_zip";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        // Создаем тело запроса
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("file_path", file.getAbsolutePath());
+        // Устанавливаем заголовки
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(apiUrlAddZip, requestEntity, String.class);
+
+
+        System.out.println(response.getBody());
+        return response.getBody();
     }
 }

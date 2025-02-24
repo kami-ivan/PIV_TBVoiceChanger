@@ -9,7 +9,7 @@ import java.nio.file.Path;
 
 public class FileSender {
 
-    private FileManager fileManager = new FileManager();
+    private final FileManager fileManager = new FileManager();
 
 
     public SendDocument sendDocument(Message message, File file) {

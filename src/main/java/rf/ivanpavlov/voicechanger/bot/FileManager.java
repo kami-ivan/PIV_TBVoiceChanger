@@ -12,9 +12,9 @@ public class FileManager {
     private static final String DOWNLOAD_DIR = "downloads";
     private static final String FILE_TO_SEND_DIR = "file_to_send";
 
-    public Path getDownloadPath(User user, File file) {
+    public Path getDownloadPath(User user, String fileName) {
         return Paths.get(DOWNLOAD_DIR, sanitizeFileName(user.getUserName()) + "_" + user.getId(),
-                getFileName(file));
+                fileName);
     }
 
     public Path getSendFilePath(User user, java.io.File file) {
