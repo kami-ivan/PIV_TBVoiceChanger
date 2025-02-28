@@ -65,6 +65,9 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
                     if (!isTypeValid(file)) {
                         throw new Exception("Неправильный формат файла.");
                     }
+                    if (settings.get("model") == null || settings.get("pitch") == null || settings.get("algorithm") == null) {
+                        throw new Exception("Пожалуйста, укажите все параметры в меню. /menu");
+                    }
                     result = fileAPI.convert(file, settings);
                     sendFile(chatId, result);
                     sendTextMessage(chatId, getTypeFile(result));
@@ -89,13 +92,16 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
             case "/menu":
                 sendMainMenu(chatId);
                 break;
-            case "/uploadzip":
+            /*case "/uploadzip":
                 try {
                     uploadZipFile(chatId);
                 } catch (Exception e) {
                     handleError(chatId, "Ошибка при добавлении моделей.", e);
                 }
-                break;
+                break;*/
+            default:
+                sendTextMessage(chatId, "Простите, я не знаю такой команды. " +
+                        "Может вы хотите перейти в главное меню? /menu");
         }
         if (isChoosingPitch) {
             if (text.matches("-?\\d+")) {
