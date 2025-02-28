@@ -67,6 +67,7 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
                     }
                     result = fileAPI.convert(file, settings);
                     sendFile(chatId, result);
+                    sendTextMessage(chatId, getTypeFile(result));
 
                 } catch (Exception e) {
                     handleError(chatId, "Во время обработки файла произошла ошибка.", e);

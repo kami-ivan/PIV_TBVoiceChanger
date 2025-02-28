@@ -8,6 +8,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 
@@ -17,6 +19,9 @@ public class FileAPI {
     String apiUrlAddZip = "http://localhost:8000/add_zip";  // URL вашего API        // Путь к файлу
 
     public File convert(File file, Map<String, String> settings) throws Exception {
+        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("dd.MM.yy_HH-mm-ss");
+        String dateTime = LocalDateTime.now().format(formatter1);
+
         RestTemplate restTemplate = new RestTemplate();
         // Создаем тело запроса
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
@@ -34,7 +39,8 @@ public class FileAPI {
         if (response.getStatusCode() == HttpStatus.OK) {
             byte[] responseBody = response.getBody();
             // Сохраняем полученные данные в файл
-            File outputFile = new File("tempFiles/temp_result.wav");
+            File outputFile = new File("tempFiles/" + settings.get("model") + "_" +
+                    settings.get("pitch") + "_" + settings.get("algorithm") + "_" + dateTime + ".wav");
             if (responseBody == null) {
                 throw new Exception("Файл от сервера потерян.");
             }
