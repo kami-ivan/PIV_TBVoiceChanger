@@ -32,7 +32,6 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
     Menu menu = new Menu();
 
     private boolean isChoosingPitch = false;
-    private boolean isDownloadingFile = false;
     private boolean isChoosingModel = false;
     private Map<String, String> settings = new HashMap<>();
     private List<String> listAllModels = getSubfolderNames("C:\\\\Users\\\\HONOR\\\\Desktop\\\\RVC-GUI-pkg\\\\models");
@@ -55,8 +54,7 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
             if (message.hasText()) {
                 handleMessage(chatId, message.getText());
                 // если сообщение это файл
-            } else if (isDownloadingFile &&
-                    (message.hasDocument() || message.hasAudio() || message.hasVoice())) {
+            } else if ((message.hasDocument() || message.hasAudio() || message.hasVoice())) {
 
                 File file = getFileFromTG(message);
                 File result = null;
@@ -75,7 +73,6 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
                 } finally {
                     file.delete();
                     result.delete();
-                    isDownloadingFile = false;
                     sendMainMenu(chatId);
                 }
             }
@@ -86,6 +83,9 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
         switch (text) {
             case "/start":
                 createDefaultSettings();
+                sendMainMenu(chatId);
+                break;
+            case "/menu":
                 sendMainMenu(chatId);
                 break;
             case "/uploadzip":
@@ -126,11 +126,6 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
             switch (callbackData) {
                 case "main_menu":
                     sendEditMainMenu(editMessage);
-                    break;
-                case "start_download":
-                    isDownloadingFile = true;
-                    sendTextMessage(chatId, "Вы можете отправлять свой файл! \n" +
-                            "Я так же умею работать с голосовыми сообщениями)");
                     break;
                 case "menu_models":
                     sendEditMenuModels(editMessage, settings.get("model"));

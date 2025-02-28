@@ -26,7 +26,6 @@ public class Menu {
 
         List<InlineKeyboardButton> row1 = new ArrayList<>();
         List<InlineKeyboardButton> row2 = new ArrayList<>();
-        List<InlineKeyboardButton> row3 = new ArrayList<>();
 
         // Первая кнопка
         row1.add(InlineKeyboardButton.builder()
@@ -46,13 +45,9 @@ public class Menu {
                 .callbackData("menu_algorithm")
                 .build());
 
-        row3.add(InlineKeyboardButton.builder().text("готово")
-                .callbackData("start_download")
-                .build());
 
         rows.add(row1);
         rows.add(row2);
-        rows.add(row3);
         markup.setKeyboard(rows);
         return markup;
     }
@@ -117,7 +112,7 @@ public class Menu {
 
     public String getTextMenuAllModels(List<String> models) {
         String text = "Вот список всех моделей: \n\n" +
-                "Чтобы выбрать модель: \nнажмите на \"выбрать модель\" и отправьте название модели.";
+                "Чтобы выбрать модель: \nнажмите на \"выбрать модель\" и отправьте название модели.\n\n";
 
         text += models.toString().replaceAll(", ", "\n");
         return text;
