@@ -69,8 +69,8 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
                         throw new Exception("Пожалуйста, укажите все параметры в меню. /menu");
                     }
                     result = fileAPI.convert(file, settings);
+
                     sendFile(chatId, result);
-                    sendTextMessage(chatId, getTypeFile(result));
 
                 } catch (Exception e) {
                     handleError(chatId, "Во время обработки файла произошла ошибка.", e);
@@ -91,6 +91,9 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
                 break;
             case "/menu":
                 sendMainMenu(chatId);
+                break;
+            case "/menu_type":
+                sendMenuTypeFile(chatId, settings.get("type"));
                 break;
             /*case "/uploadzip":
                 try {
@@ -197,6 +200,18 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
                     settings.put("algorithm", "super");
                     sendEditMenuAlgorithm(editMessage, "super");
                     break;
+                case "output_wav":
+                    settings.put("type", "wav");
+                    sendEditMenuTypeFile(editMessage, "wav");
+                    break;
+                case "output_mp3":
+                    settings.put("type", "mp3");
+                    sendEditMenuTypeFile(editMessage, "mp3");
+                    break;
+                case "output_oga":
+                    settings.put("type", "oga");
+                    sendEditMenuTypeFile(editMessage, "oga");
+                    break;
             }
         } catch (Exception e) {
             handleError(chatId, "Ошибка \n", e);
@@ -268,7 +283,6 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
         }
     }
 
-
     private void sendEditMenuPitch(EditMessageText editMessage, String value) throws Exception {
         editMessage.setText(menu.getTextMenuPitch());
         editMessage.setReplyMarkup(menu.getMarkupMenuPitch(value));
@@ -281,6 +295,28 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
     private void sendEditMenuAlgorithm(EditMessageText editMessage, String value) throws Exception {
         editMessage.setText(menu.getTextMenuAlgorithm());
         editMessage.setReplyMarkup(menu.getMarkupMenuAlgorithm(value));
+        try {
+            execute(editMessage);
+        } catch (TelegramApiException ignored) {
+        }
+    }
+
+    private void sendMenuTypeFile(long chatId, String value) {
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.setText(menu.getTextMenuTypeFile());
+        message.setReplyMarkup(menu.getMarkupMenuTypeFile(value));
+
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            handleError(chatId, "Ошибка при отправлении меню. \n", e);
+        }
+    }
+
+    private void sendEditMenuTypeFile(EditMessageText editMessage, String value) throws Exception {
+        editMessage.setText(menu.getTextMenuTypeFile());
+        editMessage.setReplyMarkup(menu.getMarkupMenuTypeFile(value));
         try {
             execute(editMessage);
         } catch (TelegramApiException ignored) {
@@ -304,6 +340,7 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
         settings.put("pitch", "0");
         settings.put("algorithm", "low");
         settings.put("model", "man");
+        settings.put("type", "wav");
     }
 
     private void uploadZipFile(long chatId) throws Exception {

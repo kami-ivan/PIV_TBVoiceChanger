@@ -280,4 +280,46 @@ public class Menu {
         return markup;
     }
 
+    public String getTextMenuTypeFile() {
+        return "Выберите формат файла с измененным голосом:";
+    }
+
+    public InlineKeyboardMarkup getMarkupMenuTypeFile(String value) {
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+
+        List<InlineKeyboardButton> row1 = new ArrayList<>();
+
+        String str1 = "", str2 = "", str3 = "";
+        switch (value) {
+            case "wav":
+                str1 = "✅";
+                break;
+            case "mp3":
+                str2 = "✅";
+                break;
+            case "oga":
+                str3 = "✅";
+                break;
+        }
+        row1.add(InlineKeyboardButton.builder()
+                .text(str1 + "wav")
+                .callbackData("output_wav")
+                .build());
+        row1.add(InlineKeyboardButton.builder()
+                .text(str2 + "mp3")
+                .callbackData("output_mp3")
+                .build());
+        row1.add(InlineKeyboardButton.builder()
+                .text(str3 + "голосовое")
+                .callbackData("output_oga")
+                .build());
+
+        rows.add(row1);
+        markup.setKeyboard(rows);
+
+        return markup;
+    }
+
 }
+

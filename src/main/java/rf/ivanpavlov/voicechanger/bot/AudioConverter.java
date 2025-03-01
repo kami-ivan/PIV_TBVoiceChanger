@@ -16,13 +16,16 @@ public class AudioConverter {
                 sourceFormat.getChannels(), -1, -1, false);
         // Конвертация
         AudioInputStream vorbisStream = AudioSystem.getAudioInputStream(vorbisFormat, wavStream);
-        inputWav.delete();
         // Сохранение в OGA-файл
-        AudioSystem.write(vorbisStream, new AudioFileFormat.Type("OGG", "oga"), new File("temp.oga"));
+        File outputFile = new File(inputWav.getPath().substring(0, inputWav.getPath().lastIndexOf(".")) + ".oga");
+        AudioSystem.write(vorbisStream, new AudioFileFormat.Type("OGG", "oga"), outputFile);
 
         wavStream.close();
         vorbisStream.close();
-        return new File("temp.oga");
+        inputWav.delete();
+
+        return outputFile;
     }
+
 
 }
