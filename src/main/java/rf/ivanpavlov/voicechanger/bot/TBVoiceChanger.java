@@ -69,7 +69,6 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
                         throw new Exception("Пожалуйста, укажите все параметры в меню. /menu");
                     }
                     result = fileAPI.convert(file, settings);
-
                     sendFile(chatId, result);
 
                 } catch (Exception e) {
@@ -84,17 +83,32 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
     }
 
     private void handleMessage(long chatId, String text) {
-        switch (text) {
-            case "/start":
-                createDefaultSettings();
+        if (isChoosingPitch) {
+            if (text.matches("-?\\d+")) {
+                settings.replace("pitch", text);
+            }
+            isChoosingPitch = false;
+            sendMainMenu(chatId);
+        } else if (isChoosingModel) {
+            if (Integer.parseInt(text) <= listAllModels.size() && Integer.parseInt(text) > 0) {
+                settings.replace("model", listAllModels.get(Integer.parseInt(text) - 1));
+                isChoosingModel = false;
                 sendMainMenu(chatId);
-                break;
-            case "/menu":
-                sendMainMenu(chatId);
-                break;
-            case "/menu_type":
-                sendMenuTypeFile(chatId, settings.get("type"));
-                break;
+            } else {
+                handleError(chatId, "Ошибка", new Exception("вы ввели неккоректное имя модели"));
+            }
+        } else {
+            switch (text) {
+                case "/start":
+                    createDefaultSettings();
+                    sendMainMenu(chatId);
+                    break;
+                case "/menu":
+                    sendMainMenu(chatId);
+                    break;
+                case "/menu_type":
+                    sendMenuTypeFile(chatId, settings.get("type"));
+                    break;
             /*case "/uploadzip":
                 try {
                     uploadZipFile(chatId);
@@ -102,24 +116,9 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
                     handleError(chatId, "Ошибка при добавлении моделей.", e);
                 }
                 break;*/
-            default:
-                sendTextMessage(chatId, "Простите, я не знаю такой команды. " +
-                        "Может вы хотите перейти в главное меню? /menu");
-        }
-        if (isChoosingPitch) {
-            if (text.matches("-?\\d+")) {
-                settings.replace("pitch", text);
-            }
-            isChoosingPitch = false;
-            sendMainMenu(chatId);
-        }
-        if (isChoosingModel) {
-            if (listAllModels.contains(text)) {
-                settings.replace("model", text);
-                isChoosingModel = false;
-                sendMainMenu(chatId);
-            } else {
-                handleError(chatId, "Ошибка", new Exception("вы ввели неккоректное имя модели"));
+                default:
+                    sendTextMessage(chatId, "Простите, я не знаю такой команды. " +
+                            "Может вы хотите перейти в главное меню? /menu");
             }
         }
     }
@@ -149,11 +148,8 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
                     sendEditMenuModels(editMessage, "woman");
                     break;
                 case "model_all":
-                    sendEditMenuAllModels(editMessage);
-                    break;
-                case "choosing_model":
                     isChoosingModel = true;
-                    sendTextMessage(chatId, "Напишите название модели, которая вас интересует:");
+                    sendEditMenuAllModels(editMessage);
                     break;
                 case "menu_pitch":
                     if (!settings.get("pitch").equals("12") &&

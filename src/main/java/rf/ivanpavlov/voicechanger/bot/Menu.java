@@ -12,12 +12,11 @@ public class Menu {
     public String getTextMainMenu(Map<String, String> settings) {
         return "Главное меню:\n\n" +
                 "Чтобы настроить параметры - нажмите на соответствующий параметр " +
-                "и следуйте дальнейшим указаниям!\n\n" +
-                "❗Ваши параметры:❗\n" +
+                "и следуйте дальнейшим указаниям.\n\n" +
+                "\uD83C\uDF1FВаши параметры:\uD83C\uDF1F\n" +
                 "Модель: " + settings.get("model") + "\n" +
                 "Питч: " + settings.get("pitch") + "\n" +
-                "Качество: " + settings.get("algorithm") + "\n\n" +
-                "Если вас все устраивает - нажимайте на \"готово\" и загружайте аудиофайл!";
+                "Качество: " + settings.get("algorithm") + "\n\n";
     }
 
     public InlineKeyboardMarkup getMarkupMainMenu() {
@@ -112,9 +111,10 @@ public class Menu {
 
     public String getTextMenuAllModels(List<String> models) {
         String text = "Вот список всех моделей: \n\n" +
-                "Чтобы выбрать модель: \nнажмите на \"выбрать модель\" и отправьте название модели.\n\n";
-
-        text += models.toString().replaceAll(", ", "\n");
+                "Чтобы выбрать модель: \nотправьте ее номер.\n\n";
+        for (int i = 0; i < models.size(); i++) {
+            text += (i + 1) + ". " + models.get(i) + "\n";
+        }
         return text;
     }
 
@@ -123,20 +123,13 @@ public class Menu {
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
 
         List<InlineKeyboardButton> row1 = new ArrayList<>();
-        List<InlineKeyboardButton> row2 = new ArrayList<>();
         row1.add(InlineKeyboardButton.builder()
                 .text("назад")
                 .callbackData("menu_models")
                 .build());
 
-        row2.add(InlineKeyboardButton.builder()
-                .text("выбрать модель")
-                .callbackData("choosing_model")
-                .build());
-
 
         rows.add(row1);
-        rows.add(row2);
         markup.setKeyboard(rows);
 
         return markup;
