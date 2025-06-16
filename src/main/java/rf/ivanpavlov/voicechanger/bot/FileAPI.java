@@ -16,7 +16,7 @@ import java.util.Map;
 public class FileAPI {
     // @Value("${url.api.convert}")
     String apiUrlConvert = "http://localhost:8000/convert";
-    String apiUrlAddZip = "http://localhost:8000/add_zip";  // URL вашего API        // Путь к файлу
+    String apiUrlAddZip = "http://localhost:8000/add_zip";  // URL вашего API
 
     public File convert(File file, Map<String, String> settings) throws Exception {
         DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("dd.MM.yy_HH-mm-ss");
@@ -52,6 +52,7 @@ public class FileAPI {
         return null;
     }
 
+    // не законченая функция!!
     public String add_zip(File file) throws Exception {
         RestTemplate restTemplate = new RestTemplate();
         // Создаем тело запроса
