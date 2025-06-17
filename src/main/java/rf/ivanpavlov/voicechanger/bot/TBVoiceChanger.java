@@ -34,7 +34,7 @@ public class TBVoiceChanger extends TelegramLongPollingBot {
     private boolean isChoosingPitch = false;
     private boolean isChoosingModel = false;
     private Map<String, String> settings = new HashMap<>();
-    private List<String> listAllModels = getSubfolderNames("RVC-GUI-pkg\\models");
+    private List<String> listAllModels = getSubfolderNames("C:\\Users\\HONOR\\Desktop\\RVC-GUI-pkg\\models");
 
 
     TBVoiceChanger(String botUsername, String botToken) {
